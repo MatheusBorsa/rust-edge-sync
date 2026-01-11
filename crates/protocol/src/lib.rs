@@ -2,6 +2,7 @@ use serde::{Deserialize, Serialize};
 
 pub mod codec;
 pub mod event;
+pub mod framer;
 pub mod request;
 pub mod response;
 pub mod version;

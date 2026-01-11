@@ -1,5 +1,6 @@
 use serde::{Deserialize, Serialize};
 
+pub mod codec;
 pub mod event;
 pub mod request;
 pub mod response;

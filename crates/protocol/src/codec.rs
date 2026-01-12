@@ -1,3 +1,4 @@
+use crate::Frame;
 use serde_json;
 
 pub fn encode(frame: &Frame) -> Vec<u8> {

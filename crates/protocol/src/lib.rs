@@ -21,7 +21,7 @@ pub enum Frame {
         version: Version,
         request: Request,
     },
-    Reponse {
+    Response {
         id: RequestId,
         version: Version,
         response: Request,

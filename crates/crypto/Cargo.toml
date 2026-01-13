@@ -4,3 +4,9 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+rand_core = "*"
+x25519-dalek = "*"
+chacha20poly1305 = "*"
+hkdf = "*"
+sha2 = "*"
+thiserror = "*"

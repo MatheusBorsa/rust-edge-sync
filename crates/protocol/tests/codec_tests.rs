@@ -49,3 +49,36 @@ fn test_codec_invalid_json() {
     let result = std::panic::catch_unwind(|| codec::decode(bad_bytes));
     assert!(result.is_err());
 }
+
+#[test]
+fn test_codec_truncated_payload() {
+    let frame = Frame::Request {
+        id: 1,
+        version: Version { major: 1, minor: 0 },
+        request: Request::Ping,
+    };
+
+    let bytes = codec::encode(&frame);
+
+    for cut in 0..bytes.len() {
+        let truncated = &bytes[..cut];
+        let result = std::panic::catch_unwind(|| codec::decode(truncated));
+
+        assert!(result.is_err());
+    }
+}
+
+#[test]
+fn test_codec_extra_trailing_bytes() {
+    let frame = Frame::Request {
+        id: 1,
+        version: Version { major: 1, minor: 0 },
+        request: Request::Ping,
+    };
+
+    let mut bytes = codec::encode(&frame);
+    bytes.extend(b"garbage");
+
+    let result = std::panic::catch_unwind(|| codec::decode(&bytes));
+    assert!(result.is_err());
+}

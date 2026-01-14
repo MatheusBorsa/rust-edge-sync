@@ -1,4 +1,4 @@
-use protocol::{Frame, Request, Version, codec};
+use protocol::{Frame, Request, Response, Version, codec};
 
 #[test]
 fn test_codec_roundtrip_request() {
@@ -19,7 +19,7 @@ fn test_codec_roundtrip_response() {
     let frame = Frame::Response {
         id: 42,
         version: Version { major: 1, minor: 0 },
-        response: Request::Ping,
+        response: Response::Pong,
     };
 
     let bytes = codec::encode(&frame);

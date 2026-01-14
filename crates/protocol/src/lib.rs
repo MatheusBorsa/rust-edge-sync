@@ -24,25 +24,15 @@ pub enum Frame {
     Response {
         id: RequestId,
         version: Version,
-        response: Request,
+        response: Response,
     },
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn request_frame_roundtrip() {
-        let frame = Frame::Request {
-            id: 1,
-            version: Version { major: 1, minor: 0 },
-            request: Request::Ping,
-        };
-
-        let bytes = serde_json::to_vec(&frame).unwrap();
-        let decoded: Frame = serde_json::from_slice(&bytes).unwrap();
-
-        assert_eq!(frame, decoded);
+impl Frame {
+    pub fn version(&self) -> Version {
+        match self {
+            Frame::Request { version, .. } => *version,
+            Frame::Response { version, .. } => *version,
+        }
     }
 }

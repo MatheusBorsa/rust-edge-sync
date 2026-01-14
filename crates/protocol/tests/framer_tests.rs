@@ -1,4 +1,4 @@
-use protocol::{Frame, Request, Version, codec, framer};
+use protocol::{Frame, Request, Response, Version, codec, framer};
 use std::io::Cursor;
 
 #[test]
@@ -35,7 +35,7 @@ fn test_framer_multiple_frames() {
         Frame::Response {
             id: 1,
             version: Version { major: 1, minor: 0 },
-            response: Request::Ping,
+            response: Response::Pong,
         },
     ];
 

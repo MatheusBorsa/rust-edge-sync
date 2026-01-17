@@ -16,28 +16,32 @@ fn main() -> io::Result<()> {
     let mut crypto = client_handshake(&mut stream)?;
     println!("handshake complete");
 
-    let frame = Frame::Request {
-        id: 1,
-        version: Version { major: 1, minor: 0 },
-        request: Request::Ping,
-    };
+    let mut id = 1;
 
-    let payload = codec::encode(&frame);
+    loop {
+        let frame = Frame::Request {
+            id,
+            version: Version { major: 1, minor: 0 },
+            request: Request::Ping,
+        };
 
-    let encrypted = crypto
-        .encrypt(&payload)
-        .map_err(|_| io::Error::new(ErrorKind::InvalidData, "encrypt failed"))?;
+        let payload = codec::encode(&frame);
+        let encrypted = crypto
+            .encrypt(&payload)
+            .map_err(|_| io::Error::new(ErrorKind::InvalidData, "encrypt failed"))?;
 
-    framer::write_frame(&mut stream, &encrypted)?;
-    println!("ping sent");
+        framer::write_frame(&mut stream, &encrypted)?;
+        println!("ping sent");
 
-    let encrypted_response = framer::read_frame(&mut stream)?;
-    let plaintext = crypto
-        .decrypt(&encrypted_response)
-        .map_err(|_| io::Error::new(ErrorKind::InvalidData, "decrypt failed"))?;
+        let encrypted_response = framer::read_frame(&mut stream)?;
+        let plaintext = crypto
+            .decrypt(&encrypted_response)
+            .map_err(|_| io::Error::new(ErrorKind::InvalidData, "decrypt failed"))?;
 
-    let response = codec::decode(&plaintext);
-    println!("received response: {:?}", response);
+        let response = codec::decode(&plaintext);
+        println!("received response: {:?}", response);
 
-    Ok(())
+        id += 1;
+        std::thread::sleep(std::time::Duration::from_secs(1));
+    }
 }
